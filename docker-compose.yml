@@ -1,0 +1,23 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:14.3
+    environment:
+      POSTGRES_DB: "bot_db"
+      POSTGRES_USER: "bot_user"
+      POSTGRES_PASSWORD: "pgpwd4habr"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - ../2. Init Database:/docker-entrypoint-initdb.d
+      - .:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  aio_bot:
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/aio_bot
+    build: .
+    command: ["python3", "/aio_bot/main.py"]
+    depends_on: [postgres]
